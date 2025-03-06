@@ -1,0 +1,23 @@
+name: Self-hosted Runner Test  # GitHub Actions에서 보이는 이름
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 push하면 실행됨
+
+jobs:
+  test-runner:
+    runs-on: self-hosted  # 🛠️ self-hosted runner에서 실행
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # 현재 저장소의 코드를 가져옴
+
+      - name: Print system information
+        run: |
+          echo "✅ GitHub Actions Runner 테스트 성공!"
+          echo "🔥 호스트명: $(hostname)"
+          echo "🛠️ 현재 사용자: $(whoami)"
+          echo "🖥️ 현재 경로: $(pwd)"
+          echo "📂 저장소 파일 목록:"
+          ls -alh
+
