@@ -1,0 +1,35 @@
+name: Terraform S3 Bucket
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: self-hosted # 온프레미스 러너에서 실행
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.0 # 사용할 Terraform 버전 지정
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # GitHub Secrets에 저장된 AWS 액세스 키
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # GitHub Secrets에 저장된 AWS 비밀 키
+          aws-region: <your-aws-region> # 사용할 AWS 리전 지정
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Terraform Destroy # 테스트 후 리소스 삭제 (선택 사항)
+        if: always() # 항상 실행
+        run: terraform destroy -auto-approve
